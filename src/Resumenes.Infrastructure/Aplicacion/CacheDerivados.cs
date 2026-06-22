@@ -42,11 +42,19 @@ public class CacheDerivados(IRepositorioEstado repo, Configuracion cfg)
 
     private void Guardar(string hash, string tipo, string variante, string nombreArchivo, string rutaOrigen)
     {
-        var dir = Path.Combine(RaizCache(), hash);
-        Directory.CreateDirectory(dir);
-        var destino = Path.Combine(dir, nombreArchivo);
-        File.Copy(rutaOrigen, destino, true);
-        repo.GuardarCacheDerivado(hash, tipo, variante, destino);
+        try
+        {
+            var dir = Path.Combine(RaizCache(), hash);
+            Directory.CreateDirectory(dir);
+            var destino = Path.Combine(dir, nombreArchivo);
+            File.Copy(rutaOrigen, destino, true);
+            repo.GuardarCacheDerivado(hash, tipo, variante, destino);
+        }
+        catch
+        {
+            // Poblar la caché es best-effort: el artefacto local del análisis ya existe.
+            // Un fallo al cachear (p. ej. carrera de File.Copy) no debe romper el análisis.
+        }
     }
 
     private static string Recorte(string s) => s.Length > 8 ? s[..8] : s;

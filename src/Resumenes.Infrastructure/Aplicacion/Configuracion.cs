@@ -16,4 +16,6 @@ public class Configuracion
     public string ManifestUrl { get; set; } = "https://example.com/resumenes/manifest.json";
     /// <summary>Raíz por-usuario donde se descomprime el runtime. Vacío = App calcula %LOCALAPPDATA%/ResumenesApp/runtime.</summary>
     public string RutaRuntime { get; set; } = "";
+    /// <summary>Raíz de la caché de derivados (OCR/limpieza). Vacío = App calcula %LOCALAPPDATA%/ResumenesApp/cache.</summary>
+    public string RutaCache { get; set; } = "";
 }

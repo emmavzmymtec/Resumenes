@@ -59,6 +59,9 @@ public partial class App : Application
         if (string.IsNullOrWhiteSpace(cfg.RutaRuntime))
             cfg.RutaRuntime = System.IO.Path.Combine(raizDatos, "runtime");
         cfg.RutaRuntime = Environment.ExpandEnvironmentVariables(cfg.RutaRuntime);
+        if (string.IsNullOrWhiteSpace(cfg.RutaCache))
+            cfg.RutaCache = System.IO.Path.Combine(raizDatos, "cache");
+        cfg.RutaCache = Environment.ExpandEnvironmentVariables(cfg.RutaCache);
 
         // Expandir variables de entorno en las rutas (settings de instalación las usa).
         cfg.PythonExe       = Environment.ExpandEnvironmentVariables(cfg.PythonExe);

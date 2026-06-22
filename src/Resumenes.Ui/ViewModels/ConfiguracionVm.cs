@@ -161,12 +161,19 @@ public partial class ConfiguracionVm : VistaModeloBase
     [RelayCommand]
     private void RestaurarPrompts()
     {
-        _prompts.RestaurarDefault(ServicioPrompts.ClaveLimpieza);
-        _prompts.RestaurarDefault(ServicioPrompts.ClaveDeteccion);
-        _prompts.RestaurarDefault(ServicioPrompts.ClaveResumen);
-        PromptLimpieza = _prompts.ObtenerEditable(ServicioPrompts.ClaveLimpieza);
-        PromptDeteccion = _prompts.ObtenerEditable(ServicioPrompts.ClaveDeteccion);
-        PromptResumen = _prompts.ObtenerEditable(ServicioPrompts.ClaveResumen);
-        MensajeEstado = "Prompts restaurados a los valores por defecto.";
+        try
+        {
+            _prompts.RestaurarDefault(ServicioPrompts.ClaveLimpieza);
+            _prompts.RestaurarDefault(ServicioPrompts.ClaveDeteccion);
+            _prompts.RestaurarDefault(ServicioPrompts.ClaveResumen);
+            PromptLimpieza = _prompts.ObtenerEditable(ServicioPrompts.ClaveLimpieza);
+            PromptDeteccion = _prompts.ObtenerEditable(ServicioPrompts.ClaveDeteccion);
+            PromptResumen = _prompts.ObtenerEditable(ServicioPrompts.ClaveResumen);
+            MensajeEstado = "Prompts restaurados a los valores por defecto.";
+        }
+        catch (Exception ex)
+        {
+            MensajeEstado = $"Error al restaurar los prompts: {ex.Message}";
+        }
     }
 }

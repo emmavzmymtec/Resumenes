@@ -25,6 +25,9 @@ public class ConfirmarTemasVmTests
         public void EliminarAnalisis(string id) { }
         public Resumenes.Core.Modelos.Unidad? ObtenerUnidad(string analisisId, string? archivoId, string? temaId, Resumenes.Core.Modelos.Etapa etapa) => null;
         public void GuardarUnidad(Resumenes.Core.Modelos.Unidad u) { }
+        public string? ObtenerAjustePrompt(string clave) => null;
+        public void GuardarAjustePrompt(string clave, string texto) { }
+        public void EliminarAjustePrompt(string clave) { }
     }
 
     // ── Fake de ServicioNavegacion que no hace nada ──────────────────────

@@ -4,6 +4,20 @@ Todos los cambios notables del proyecto se documentan en este archivo.
 Formato basado en [Keep a Changelog](https://keepachangelog.com/es/1.1.0/);
 versionado [SemVer](https://semver.org/lang/es/).
 
+## [No publicado]
+
+### Añadido
+
+- **Prompts editables desde Configuración** (corrección de OCR, detección de temas y resumen), con opción de restaurar los valores por defecto. El formato de salida del PDF permanece protegido.
+
+### Cambiado
+
+- **Los prompts por defecto ahora son neutros y multi-idioma**: la IA detecta el idioma del material y resume en ese idioma (ya no se fuerza español).
+
+### Importante
+
+- Tras actualizar, los análisis existentes se reprocesan una vez: la limpieza y el resumen ahora incluyen el prompt y el modelo en su hash de entrada, por lo que se regeneran en la próxima corrida (costo de tokens puntual).
+
 ## [1.0.0] — 2026-06-19
 
 Primera versión. Aplicación de escritorio (.NET 9 / WPF) que convierte una carpeta de

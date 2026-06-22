@@ -41,6 +41,11 @@ public class RepositorioEnMemoria : IRepositorioEstado
         _unidades[Clave(u.AnalisisId, u.ArchivoId, u.TemaId, u.Etapa)] = u;
         Guardados.Add(u);
     }
+
+    private readonly Dictionary<string, string> _ajustes = new();
+    public string? ObtenerAjustePrompt(string clave) => _ajustes.TryGetValue(clave, out var v) ? v : null;
+    public void GuardarAjustePrompt(string clave, string texto) => _ajustes[clave] = texto;
+    public void EliminarAjustePrompt(string clave) => _ajustes.Remove(clave);
 }
 
 public class FakeClienteIA : IClienteIA

@@ -183,6 +183,59 @@
         </StackPanel>
       </ui:Card>
 
+      <!-- ── Prompts (avanzado) ── -->
+      <ui:Card Padding="20" Margin="0,0,0,16">
+        <StackPanel>
+          <StackPanel Orientation="Horizontal" Margin="0,0,0,4">
+            <ui:SymbolIcon Symbol="Wand24" Margin="0,0,8,0"
+                           Foreground="{DynamicResource SystemAccentColorBrush}"/>
+            <TextBlock Text="Prompts (avanzado)"
+                       FontSize="14" FontWeight="SemiBold"
+                       Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                       VerticalAlignment="Center"/>
+          </StackPanel>
+          <TextBlock Text="Estos prompts definen el comportamiento central de la IA. Editás solo el rol/estilo; el formato de salida (que la app necesita para generar el PDF y los temas) se aplica automáticamente y no se puede romper."
+                     FontSize="12" TextWrapping="Wrap"
+                     Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                     Margin="0,0,0,12"/>
+
+          <!-- Limpieza -->
+          <TextBlock Text="Corrección de OCR (limpieza)" FontSize="13" FontWeight="SemiBold"
+                     Foreground="{DynamicResource TextFillColorPrimaryBrush}" Margin="0,0,0,4"/>
+          <ui:TextBox Text="{Binding PromptLimpieza, UpdateSourceTrigger=PropertyChanged}"
+                      AcceptsReturn="True" TextWrapping="Wrap" MinHeight="60" FontSize="12"/>
+          <TextBlock Text="{Binding FormatoLimpieza}" FontSize="11" TextWrapping="Wrap"
+                     Foreground="{DynamicResource TextFillColorTertiaryBrush}" Margin="0,4,0,12"/>
+
+          <!-- Detección -->
+          <TextBlock Text="Detección de temas" FontSize="13" FontWeight="SemiBold"
+                     Foreground="{DynamicResource TextFillColorPrimaryBrush}" Margin="0,0,0,4"/>
+          <ui:TextBox Text="{Binding PromptDeteccion, UpdateSourceTrigger=PropertyChanged}"
+                      AcceptsReturn="True" TextWrapping="Wrap" MinHeight="60" FontSize="12"/>
+          <TextBlock Text="El formato JSON de salida se aplica automáticamente."
+                     FontSize="11" TextWrapping="Wrap"
+                     Foreground="{DynamicResource TextFillColorTertiaryBrush}" Margin="0,4,0,12"/>
+
+          <!-- Resumen -->
+          <TextBlock Text="Resumen" FontSize="13" FontWeight="SemiBold"
+                     Foreground="{DynamicResource TextFillColorPrimaryBrush}" Margin="0,0,0,4"/>
+          <ui:TextBox Text="{Binding PromptResumen, UpdateSourceTrigger=PropertyChanged}"
+                      AcceptsReturn="True" TextWrapping="Wrap" MinHeight="60" FontSize="12"/>
+          <TextBlock Text="{Binding FormatoResumen}" FontSize="11" TextWrapping="Wrap"
+                     Foreground="{DynamicResource TextFillColorTertiaryBrush}" Margin="0,4,0,12"/>
+
+          <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+            <ui:Button Content="Restaurar por defecto"
+                       Command="{Binding RestaurarPromptsCommand}"
+                       Icon="{ui:SymbolIcon Symbol=ArrowReset24}" Margin="0,0,8,0"/>
+            <ui:Button Content="Guardar prompts"
+                       Command="{Binding GuardarPromptsCommand}"
+                       Appearance="Primary"
+                       Icon="{ui:SymbolIcon Symbol=Save24}"/>
+          </StackPanel>
+        </StackPanel>
+      </ui:Card>
+
       <!-- ── Botón Guardar configuración ── -->
       <ui:Button Content="Guardar configuración"
                  Command="{Binding GuardarConfigCommand}"

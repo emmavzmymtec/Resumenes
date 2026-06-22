@@ -23,4 +23,10 @@ public interface IRepositorioEstado
 
     Unidad? ObtenerUnidad(string analisisId, string? archivoId, string? temaId, Etapa etapa);
     void GuardarUnidad(Unidad u);
+
+    /// <summary>Texto editable (rol/estilo) override de un prompt; null si no hay override.</summary>
+    string? ObtenerAjustePrompt(string clave);
+    void GuardarAjustePrompt(string clave, string texto);
+    /// <summary>Borra el override (vuelve al default del código).</summary>
+    void EliminarAjustePrompt(string clave);
 }

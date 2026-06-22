@@ -122,10 +122,21 @@ CREATE TABLE IF NOT EXISTS Ejecucion (
 CREATE INDEX IF NOT EXISTS ix_ejecucion_analisis ON Ejecucion(analisis_id);
 
 -- ----------------------------------------------------------------------------
+-- AJUSTE_PROMPT: override editable por el usuario de la parte rol/estilo de un
+-- prompt. Si no hay fila para una clave, se usa el default del código.
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS AjustePrompt (
+    clave          TEXT PRIMARY KEY,   -- 'limpieza' | 'deteccion' | 'resumen'
+    texto_editable TEXT NOT NULL,
+    actualizado_en TEXT NOT NULL
+);
+
+-- ----------------------------------------------------------------------------
 -- META: versión del esquema (para futuras migraciones; migraciones -> Backlog).
 -- ----------------------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS SchemaMeta (
     clave TEXT PRIMARY KEY,
     valor TEXT NOT NULL
 );
-INSERT OR IGNORE INTO SchemaMeta (clave, valor) VALUES ('schema_version', '1');
+INSERT INTO SchemaMeta (clave, valor) VALUES ('schema_version', '2')
+ON CONFLICT(clave) DO UPDATE SET valor='2';

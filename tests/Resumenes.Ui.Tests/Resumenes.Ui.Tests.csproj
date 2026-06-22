@@ -18,6 +18,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\Resumenes.Ui\Resumenes.Ui.csproj" />
     <ProjectReference Include="..\..\src\Resumenes.Core\Resumenes.Core.csproj" />
+    <ProjectReference Include="..\Resumenes.Tests\Resumenes.Tests.csproj" />
   </ItemGroup>
 
   <ItemGroup>

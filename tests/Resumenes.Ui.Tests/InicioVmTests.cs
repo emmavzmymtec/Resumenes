@@ -26,6 +26,9 @@ public class InicioVmTests
         public void GuardarTemaArchivo(string temaId, string archivoId) { }
         public Unidad? ObtenerUnidad(string analisisId, string? archivoId, string? temaId, Etapa etapa) => null;
         public void GuardarUnidad(Unidad u) { }
+        public string? ObtenerAjustePrompt(string clave) => null;
+        public void GuardarAjustePrompt(string clave, string texto) { }
+        public void EliminarAjustePrompt(string clave) { }
     }
 
     [Fact]

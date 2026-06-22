@@ -257,4 +257,36 @@ public class SqliteRepositorioEstado(string cadenaConexion) : IRepositorioEstado
             ins.ExecuteNonQuery();
         }
     }
+
+    public string? ObtenerAjustePrompt(string clave)
+    {
+        using var con = Abrir();
+        using var cmd = con.CreateCommand();
+        cmd.CommandText = "SELECT texto_editable FROM AjustePrompt WHERE clave = $c;";
+        cmd.Parameters.AddWithValue("$c", clave);
+        var r = cmd.ExecuteScalar();
+        return r is string s ? s : null;
+    }
+
+    public void GuardarAjustePrompt(string clave, string texto)
+    {
+        using var con = Abrir();
+        using var cmd = con.CreateCommand();
+        cmd.CommandText = @"INSERT INTO AjustePrompt (clave, texto_editable, actualizado_en)
+                            VALUES ($c, $t, $a)
+                            ON CONFLICT(clave) DO UPDATE SET texto_editable=$t, actualizado_en=$a;";
+        cmd.Parameters.AddWithValue("$c", clave);
+        cmd.Parameters.AddWithValue("$t", texto);
+        cmd.Parameters.AddWithValue("$a", DateTime.UtcNow.ToString("o"));
+        cmd.ExecuteNonQuery();
+    }
+
+    public void EliminarAjustePrompt(string clave)
+    {
+        using var con = Abrir();
+        using var cmd = con.CreateCommand();
+        cmd.CommandText = "DELETE FROM AjustePrompt WHERE clave = $c;";
+        cmd.Parameters.AddWithValue("$c", clave);
+        cmd.ExecuteNonQuery();
+    }
 }

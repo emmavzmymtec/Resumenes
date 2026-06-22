@@ -74,6 +74,34 @@ public class SqliteRepositorioEstadoTests : IDisposable
         Assert.Equal("Renombrado", leido!.Nombre);
     }
 
+    [Fact]
+    public void AjustePrompt_GuardarObtenerEliminar_Funciona()
+    {
+        var tmp = Path.Combine(Path.GetTempPath(), $"resu-{Guid.NewGuid():N}.db");
+        try
+        {
+            var repo = new SqliteRepositorioEstado($"Data Source={tmp}");
+            repo.InicializarEsquema();
+
+            Assert.Null(repo.ObtenerAjustePrompt("resumen"));
+
+            repo.GuardarAjustePrompt("resumen", "Texto del alumno");
+            Assert.Equal("Texto del alumno", repo.ObtenerAjustePrompt("resumen"));
+
+            // upsert: vuelve a guardar y pisa
+            repo.GuardarAjustePrompt("resumen", "Otro texto");
+            Assert.Equal("Otro texto", repo.ObtenerAjustePrompt("resumen"));
+
+            repo.EliminarAjustePrompt("resumen");
+            Assert.Null(repo.ObtenerAjustePrompt("resumen"));
+        }
+        finally
+        {
+            Microsoft.Data.Sqlite.SqliteConnection.ClearAllPools();
+            if (File.Exists(tmp)) File.Delete(tmp);
+        }
+    }
+
     public void Dispose()
     {
         Microsoft.Data.Sqlite.SqliteConnection.ClearAllPools();

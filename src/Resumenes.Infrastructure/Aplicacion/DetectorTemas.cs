@@ -8,7 +8,7 @@ namespace Resumenes.Infrastructure.Aplicacion;
 
 // Detecta temas a partir de los textos limpios de TODOS los archivos. Si ya existe temas.json
 // (editado por el usuario), lo respeta. Persiste Tema + TemaArchivo en SQLite.
-public class DetectorTemas(IClienteIA ia, IRepositorioEstado repo, Configuracion cfg)
+public class DetectorTemas(IClienteIA ia, IRepositorioEstado repo, Configuracion cfg, ServicioPrompts prompts)
 {
     public async Task<IReadOnlyList<TemaDetectado>> DetectarOCargarAsync(
         Analisis an, IReadOnlyList<(Archivo arc, string limpioPath)> archivos, string promptTemas, CancellationToken ct)
@@ -48,12 +48,7 @@ public class DetectorTemas(IClienteIA ia, IRepositorioEstado repo, Configuracion
         }
         var idsValidos = archivos.Select(a => a.arc.Id).ToHashSet();
 
-        var sys =
-            "Sos un organizador de material de estudio. Agrupá el contenido de los archivos en TEMAS coherentes " +
-            "para estudiar un parcial (ni demasiados ni demasiado pocos). " +
-            (string.IsNullOrWhiteSpace(promptTemas) ? "" : $"Priorizá estos temas indicados por el alumno: {promptTemas}. ") +
-            "Devolvé SOLO un JSON con la forma {\"temas\":[{\"nombre\":\"...\",\"archivos\":[\"<archivo_id>\"]}]} " +
-            "usando exactamente los <archivo_id> que aparecen como '### ARCHIVO <id>'. Sin nada de texto fuera del JSON.";
+        var sys = prompts.SystemDeteccion(promptTemas);
 
         var r = await ia.CompletarAsync(new SolicitudIA(sys, sb.ToString(), 0.2, 4000, "deteccion-v1", cfg.Modelo), ct);
 

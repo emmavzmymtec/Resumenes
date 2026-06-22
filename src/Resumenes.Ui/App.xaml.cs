@@ -137,6 +137,10 @@ public partial class App : Application
         sc.AddSingleton(new SqliteRepositorioEstado($"Data Source={dbPath}"));
         sc.AddSingleton<IRepositorioEstado>(sp => sp.GetRequiredService<SqliteRepositorioEstado>());
 
+        // -------- Prompts --------
+        sc.AddSingleton<ServicioPrompts>(sp =>
+            new ServicioPrompts(sp.GetRequiredService<SqliteRepositorioEstado>()));
+
         // -------- Servicio de análisis --------
         sc.AddSingleton<IRelojUtc, RelojUtcSistema>();
         sc.AddSingleton<IServicioAnalisis, ServicioAnalisis>();
@@ -166,7 +170,10 @@ public partial class App : Application
             sp.GetRequiredService<ServicioNavegacion>(),
             sp.GetRequiredService<IServicioAnalisis>(),
             sp.GetRequiredService<Wpf.Ui.IContentDialogService>()));
-        sc.AddTransient<ConfiguracionVm>();
+        sc.AddTransient<ConfiguracionVm>(sp => new ConfiguracionVm(
+            sp.GetRequiredService<IAlmacenSecretos>(),
+            sp.GetRequiredService<Configuracion>(),
+            sp.GetRequiredService<ServicioPrompts>()));
         sc.AddTransient<OnboardingVm>();
 
         // -------- Vistas (páginas) --------

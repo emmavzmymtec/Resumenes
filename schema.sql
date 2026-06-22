@@ -157,11 +157,63 @@ CREATE TABLE IF NOT EXISTS ExclusionArchivo (
 );
 
 -- ----------------------------------------------------------------------------
+-- EXAMEN / PREGUNTA_EXAMEN / RESPUESTA_USUARIO: simulador de exámenes.
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS Examen (
+    id               TEXT PRIMARY KEY,
+    analisis_id      TEXT NOT NULL,
+    titulo           TEXT NOT NULL,
+    config_json      TEXT NOT NULL,
+    estado           TEXT NOT NULL DEFAULT 'Borrador'
+                        CHECK (estado IN ('Borrador','EnCurso','Finalizado','Corregido')),
+    nota             REAL,
+    porcentaje       REAL,
+    aprobado         INTEGER,
+    feedback_general TEXT,
+    tokens           INTEGER NOT NULL DEFAULT 0,
+    costo_estimado   REAL    NOT NULL DEFAULT 0,
+    creado_en        TEXT NOT NULL,
+    iniciado_en      TEXT,
+    finalizado_en    TEXT,
+    FOREIGN KEY (analisis_id) REFERENCES Analisis(id) ON DELETE CASCADE
+);
+CREATE INDEX IF NOT EXISTS ix_examen_analisis ON Examen(analisis_id);
+
+CREATE TABLE IF NOT EXISTS PreguntaExamen (
+    id         TEXT PRIMARY KEY,
+    examen_id  TEXT NOT NULL,
+    orden      INTEGER NOT NULL,
+    tipo       TEXT NOT NULL
+                  CHECK (tipo IN ('McUna','McVarias','VfJustificado','Desarrollo',
+                                  'DesarrolloItems','Completar','Emparejar')),
+    enunciado  TEXT NOT NULL,
+    puntos     REAL NOT NULL,
+    datos_json TEXT NOT NULL,
+    tema_id    TEXT,
+    FOREIGN KEY (examen_id) REFERENCES Examen(id) ON DELETE CASCADE
+);
+CREATE INDEX IF NOT EXISTS ix_pregunta_examen ON PreguntaExamen(examen_id);
+
+CREATE TABLE IF NOT EXISTS RespuestaUsuario (
+    id               TEXT PRIMARY KEY,
+    examen_id        TEXT NOT NULL,
+    pregunta_id      TEXT NOT NULL,
+    respuesta_json   TEXT,
+    correcta         INTEGER,
+    puntos_obtenidos REAL NOT NULL DEFAULT 0,
+    feedback_ia      TEXT,
+    ambigua          INTEGER NOT NULL DEFAULT 0 CHECK (ambigua IN (0,1)),
+    FOREIGN KEY (examen_id)   REFERENCES Examen(id)         ON DELETE CASCADE,
+    FOREIGN KEY (pregunta_id) REFERENCES PreguntaExamen(id) ON DELETE CASCADE
+);
+CREATE INDEX IF NOT EXISTS ix_respuesta_examen ON RespuestaUsuario(examen_id);
+
+-- ----------------------------------------------------------------------------
 -- META: versión del esquema (para futuras migraciones; migraciones -> Backlog).
 -- ----------------------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS SchemaMeta (
     clave TEXT PRIMARY KEY,
     valor TEXT NOT NULL
 );
-INSERT INTO SchemaMeta (clave, valor) VALUES ('schema_version', '5')
-ON CONFLICT(clave) DO UPDATE SET valor='5';
+INSERT INTO SchemaMeta (clave, valor) VALUES ('schema_version', '6')
+ON CONFLICT(clave) DO UPDATE SET valor='6';

@@ -8,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Polly;
 using Polly.Retry;
 using Resumenes.Infrastructure.Aplicacion;
+using Resumenes.Infrastructure.Examenes;
 using Resumenes.Infrastructure.IA;
 using Resumenes.Infrastructure.Ocr;
 using Resumenes.Infrastructure.Office;
@@ -147,6 +148,18 @@ public partial class App : Application
         // -------- Servicio de análisis --------
         sc.AddSingleton<IRelojUtc, RelojUtcSistema>();
         sc.AddSingleton<IServicioAnalisis, ServicioAnalisis>();
+
+        // -------- Simulador de exámenes --------
+        sc.AddSingleton<SqliteRepositorioExamenes>(_ => new SqliteRepositorioExamenes($"Data Source={dbPath}"));
+        sc.AddSingleton<Resumenes.Core.Interfaces.IRepositorioExamenes>(sp => sp.GetRequiredService<SqliteRepositorioExamenes>());
+        sc.AddSingleton<Resumenes.Core.Interfaces.IGeneradorExamen>(sp => new GeneradorExamen(sp.GetRequiredService<IClienteIA>()));
+        sc.AddSingleton<Resumenes.Core.Interfaces.ICorrectorExamen>(sp => new CorrectorExamen(sp.GetRequiredService<IClienteIA>()));
+        sc.AddSingleton<Resumenes.Core.Interfaces.IServicioExamenes>(sp => new ServicioExamenes(
+            sp.GetRequiredService<Resumenes.Core.Interfaces.IRepositorioExamenes>(),
+            sp.GetRequiredService<Resumenes.Core.Interfaces.IGeneradorExamen>(),
+            sp.GetRequiredService<Resumenes.Core.Interfaces.ICorrectorExamen>(),
+            sp.GetRequiredService<Configuracion>(),
+            sp.GetRequiredService<IRelojUtc>()));
 
         // -------- Servicios de UI --------
         sc.AddSingleton<ServicioNavegacion>();

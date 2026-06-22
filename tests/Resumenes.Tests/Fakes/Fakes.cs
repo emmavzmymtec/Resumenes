@@ -107,6 +107,30 @@ public class FakeClienteIAContador(Action alLlamar) : IClienteIA
     }
 }
 
+public class RepositorioExamenesEnMemoria : Resumenes.Core.Interfaces.IRepositorioExamenes
+{
+    private readonly Dictionary<string, Examen> _examenes = new();
+    private readonly List<PreguntaExamen> _preguntas = new();
+    private readonly List<RespuestaUsuario> _respuestas = new();
+
+    public void GuardarExamen(Examen e) => _examenes[e.Id] = e;
+    public Examen? ObtenerExamen(string id) => _examenes.TryGetValue(id, out var e) ? e : null;
+    public IReadOnlyList<Examen> ListarExamenes(string analisisId)
+        => _examenes.Values.Where(e => e.AnalisisId == analisisId).OrderByDescending(e => e.CreadoEn).ToList();
+    public void EliminarExamen(string id)
+    {
+        _examenes.Remove(id);
+        _preguntas.RemoveAll(p => p.ExamenId == id);
+        _respuestas.RemoveAll(r => r.ExamenId == id);
+    }
+    public void GuardarPregunta(PreguntaExamen p) { _preguntas.RemoveAll(x => x.Id == p.Id); _preguntas.Add(p); }
+    public IReadOnlyList<PreguntaExamen> ListarPreguntas(string examenId)
+        => _preguntas.Where(p => p.ExamenId == examenId).OrderBy(p => p.Orden).ToList();
+    public void GuardarRespuesta(RespuestaUsuario r) { _respuestas.RemoveAll(x => x.Id == r.Id); _respuestas.Add(r); }
+    public IReadOnlyList<RespuestaUsuario> ListarRespuestas(string examenId)
+        => _respuestas.Where(r => r.ExamenId == examenId).ToList();
+}
+
 public static class ServicioAnalisisFactory
 {
     public static ServicioAnalisis ParaTests(IRepositorioEstado repo, string workspace,

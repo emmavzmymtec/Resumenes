@@ -22,4 +22,8 @@ public class Configuracion
     public decimal PrecioInputPorMillonUsd { get; set; } = 0.27m;
     /// <summary>Tarifa estimada de tokens de salida (USD por millón). Editable; puede variar.</summary>
     public decimal PrecioOutputPorMillonUsd { get; set; } = 1.10m;
+    /// <summary>Escala máxima de la nota (default 10 ⇒ 0–10).</summary>
+    public double EscalaNotaMaxima { get; set; } = 10;
+    /// <summary>Nota mínima para aprobar (en la escala configurada).</summary>
+    public double NotaAprobacion { get; set; } = 6;
 }

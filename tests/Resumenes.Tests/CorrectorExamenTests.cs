@@ -44,6 +44,19 @@ public class CorrectorExamenTests
     }
 
     [Fact]
+    public void CorregirObjetivo_DatosJsonInvalido_NoLanzaYDejaEnCero()
+    {
+        var c = new CorrectorExamen(new FakeClienteIA());
+        var p = new PreguntaExamen { Id="p", ExamenId="e", Tipo=TipoPregunta.McUna, Enunciado="?", Puntos=1, DatosJson="esto no es json" };
+        var r = new RespuestaUsuario { Id="r", ExamenId="e", PreguntaId="p", RespuestaJson="0" };
+
+        c.CorregirObjetivo(p, r);   // no debe lanzar
+
+        Assert.False(r.Correcta);
+        Assert.Equal(0, r.PuntosObtenidos);
+    }
+
+    [Fact]
     public async Task CorregirAbiertasAsync_AplicaVeredictoIa()
     {
         const string veredicto = """

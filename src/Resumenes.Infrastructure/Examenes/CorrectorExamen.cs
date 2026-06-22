@@ -9,20 +9,30 @@ public class CorrectorExamen(IClienteIA ia) : ICorrectorExamen
 {
     public void CorregirObjetivo(PreguntaExamen p, RespuestaUsuario r)
     {
-        using var datos = JsonDocument.Parse(p.DatosJson);
-        var root = datos.RootElement;
-        // VfJustificado NO entra aquí: es abierto (lo evalúa la IA, que recibe la afirmación
-        // y 'esVerdadero' vía DatosJson y puntúa V/F + justificación de forma integral).
-        bool correcta = p.Tipo switch
+        try
         {
-            TipoPregunta.McUna => CorregirMcUna(root, r.RespuestaJson),
-            TipoPregunta.McVarias => CorregirMcVarias(root, r.RespuestaJson),
-            TipoPregunta.Completar => CorregirCompletar(root, r.RespuestaJson),
-            TipoPregunta.Emparejar => CorregirEmparejar(root, r.RespuestaJson),
-            _ => false
-        };
-        r.Correcta = correcta;
-        r.PuntosObtenidos = correcta ? p.Puntos : 0;
+            using var datos = JsonDocument.Parse(p.DatosJson);
+            var root = datos.RootElement;
+            // VfJustificado NO entra aquí: es abierto (lo evalúa la IA, que recibe la afirmación
+            // y 'esVerdadero' vía DatosJson y puntúa V/F + justificación de forma integral).
+            bool correcta = p.Tipo switch
+            {
+                TipoPregunta.McUna => CorregirMcUna(root, r.RespuestaJson),
+                TipoPregunta.McVarias => CorregirMcVarias(root, r.RespuestaJson),
+                TipoPregunta.Completar => CorregirCompletar(root, r.RespuestaJson),
+                TipoPregunta.Emparejar => CorregirEmparejar(root, r.RespuestaJson),
+                _ => false
+            };
+            r.Correcta = correcta;
+            r.PuntosObtenidos = correcta ? p.Puntos : 0;
+        }
+        catch
+        {
+            // DatosJson inválido/incompleto (generado por IA): no rompe la corrección del examen.
+            r.Correcta = false;
+            r.PuntosObtenidos = 0;
+            r.Ambigua = true;
+        }
     }
 
     // RespuestaJson de McUna: índice de la opción elegida (número).
@@ -122,7 +132,7 @@ public class CorrectorExamen(IClienteIA ia) : ICorrectorExamen
     {
         var set = new HashSet<int>();
         if (string.IsNullOrWhiteSpace(resp)) return set;
-        try { foreach (var e in JsonDocument.Parse(resp).RootElement.EnumerateArray()) set.Add(e.GetInt32()); }
+        try { using var d = JsonDocument.Parse(resp); foreach (var e in d.RootElement.EnumerateArray()) set.Add(e.GetInt32()); }
         catch { /* respuesta vacía o inválida ⇒ conjunto vacío */ }
         return set;
     }
@@ -130,7 +140,7 @@ public class CorrectorExamen(IClienteIA ia) : ICorrectorExamen
     {
         var lista = new List<string>();
         if (string.IsNullOrWhiteSpace(resp)) return lista;
-        try { foreach (var e in JsonDocument.Parse(resp).RootElement.EnumerateArray()) lista.Add(e.GetString() ?? ""); }
+        try { using var d = JsonDocument.Parse(resp); foreach (var e in d.RootElement.EnumerateArray()) lista.Add(e.GetString() ?? ""); }
         catch { }
         return lista;
     }
@@ -138,7 +148,7 @@ public class CorrectorExamen(IClienteIA ia) : ICorrectorExamen
     {
         var set = new HashSet<(int, int)>();
         if (string.IsNullOrWhiteSpace(resp)) return set;
-        try { foreach (var par in JsonDocument.Parse(resp).RootElement.EnumerateArray()) set.Add((par[0].GetInt32(), par[1].GetInt32())); }
+        try { using var d = JsonDocument.Parse(resp); foreach (var par in d.RootElement.EnumerateArray()) set.Add((par[0].GetInt32(), par[1].GetInt32())); }
         catch { }
         return set;
     }

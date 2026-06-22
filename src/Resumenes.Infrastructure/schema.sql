@@ -132,11 +132,24 @@ CREATE TABLE IF NOT EXISTS AjustePrompt (
 );
 
 -- ----------------------------------------------------------------------------
+-- CACHE_DERIVADO: índice de artefactos reutilizables por contenido (OCR/limpieza).
+--   El contenido vive en %LOCALAPPDATA%/ResumenesApp/cache/<hash_contenido>/.
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS CacheDerivado (
+    hash_contenido TEXT NOT NULL,
+    tipo           TEXT NOT NULL CHECK (tipo IN ('OcrBruto','Limpieza')),
+    clave_variante TEXT NOT NULL,   -- 'dpi=200;ocr=v1' | 'dpi=200;ocr=v1;prompt=<hash>;modelo=<m>'
+    ruta           TEXT NOT NULL,
+    creado_en      TEXT NOT NULL,
+    PRIMARY KEY (hash_contenido, tipo, clave_variante)
+);
+
+-- ----------------------------------------------------------------------------
 -- META: versión del esquema (para futuras migraciones; migraciones -> Backlog).
 -- ----------------------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS SchemaMeta (
     clave TEXT PRIMARY KEY,
     valor TEXT NOT NULL
 );
-INSERT INTO SchemaMeta (clave, valor) VALUES ('schema_version', '2')
-ON CONFLICT(clave) DO UPDATE SET valor='2';
+INSERT INTO SchemaMeta (clave, valor) VALUES ('schema_version', '3')
+ON CONFLICT(clave) DO UPDATE SET valor='3';

@@ -10,7 +10,7 @@ namespace Resumenes.Infrastructure.Aplicacion;
 // detectan aparte (DetectorTemas) y luego cada tema se consolida/resume/PDF.
 public class ConstructorPipeline(
     IRasterizador rasterizador, IServicioOcr ocr, IClienteIA ia, IGeneradorPdf pdf,
-    IConversorOffice conversor, Configuracion cfg, ServicioPrompts prompts)
+    IConversorOffice conversor, Configuracion cfg, ServicioPrompts prompts, CacheDerivados cache)
 {
     // ---- Pasos por-archivo: Captura -> OcrBruto -> LimpiezaIA. Devuelve también la ruta del limpio.txt. ----
     public (IReadOnlyList<PasoPipeline> pasos, string limpioPath) PasosPorArchivo(Analisis an, Archivo arc, string rutaAbs)
@@ -49,10 +49,18 @@ public class ConstructorPipeline(
                         EscrituraAtomica.Escribir(bruto, await File.ReadAllTextAsync(rutaAbs, ctx.Ct));
                         return;
                     }
+                    var hitOcr = cache.BuscarOcr(arc.HashSha256, cfg.Dpi);
+                    if (hitOcr != null)
+                    {
+                        ctx.Reportar("OCR reutilizado de caché");
+                        CopiarArtefacto(hitOcr, bruto);
+                        return;
+                    }
                     if (imagenes.Count == 0)
                         imagenes = Directory.GetFiles(imagenesDir, "pagina_*.jpg").OrderBy(x => x).ToArray();
                     EscrituraAtomica.Escribir(bruto, await ocr.OcrAsync(imagenes, ctx.Ct,
                         new Progress<(int a, int t)>(p => ctx.Reportar($"OCR página {p.a}/{p.t}", p.a, p.t))));
+                    cache.GuardarOcr(arc.HashSha256, cfg.Dpi, bruto);
                 }),
 
             // LimpiezaIA: corrige OCR sin inventar; chunking si excede MaxCharsIA.
@@ -62,6 +70,14 @@ public class ConstructorPipeline(
                     prompts.HashEditable(ServicioPrompts.ClaveLimpieza) + "|" + cfg.Modelo)),
                 async ctx =>
                 {
+                    var hashPrompt = prompts.HashEditable(ServicioPrompts.ClaveLimpieza);
+                    var hitLimpieza = cache.BuscarLimpieza(arc.HashSha256, cfg.Dpi, hashPrompt, cfg.Modelo);
+                    if (hitLimpieza != null)
+                    {
+                        ctx.Reportar("limpieza reutilizada de caché");
+                        CopiarArtefacto(hitLimpieza, limpio);
+                        return;
+                    }
                     var entrada = await File.ReadAllTextAsync(bruto, ctx.Ct);
                     var sb = new StringBuilder();
                     foreach (var bloque in Chunking.Dividir(entrada, cfg.MaxCharsIA))
@@ -72,6 +88,7 @@ public class ConstructorPipeline(
                         sb.Append(r.Texto).Append('\n');
                     }
                     EscrituraAtomica.Escribir(limpio, sb.ToString().Trim());
+                    cache.GuardarLimpieza(arc.HashSha256, cfg.Dpi, hashPrompt, cfg.Modelo, limpio);
                 }, PromptVersion: "limpieza-v1", ModeloIa: cfg.Modelo),
         };
         return (pasos, limpio);
@@ -151,6 +168,12 @@ public class ConstructorPipeline(
                 sb.Append(linea).Append('\n');
             }
         return sb.ToString().Trim();
+    }
+
+    private static void CopiarArtefacto(string origen, string destino)
+    {
+        Directory.CreateDirectory(Path.GetDirectoryName(destino)!);
+        File.Copy(origen, destino, true);
     }
 
     private static string NombreSeguro(string nombre)

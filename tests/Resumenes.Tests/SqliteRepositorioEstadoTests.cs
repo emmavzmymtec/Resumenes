@@ -102,6 +102,34 @@ public class SqliteRepositorioEstadoTests : IDisposable
         }
     }
 
+    [Fact]
+    public void CacheDerivado_GuardarBuscarUpsert_Funciona()
+    {
+        var tmp = Path.Combine(Path.GetTempPath(), $"resu-{Guid.NewGuid():N}.db");
+        try
+        {
+            var repo = new SqliteRepositorioEstado($"Data Source={tmp}");
+            repo.InicializarEsquema();
+
+            Assert.Null(repo.BuscarCacheDerivado("hashA", "OcrBruto", "dpi=200;ocr=v1"));
+
+            repo.GuardarCacheDerivado("hashA", "OcrBruto", "dpi=200;ocr=v1", @"C:\cache\hashA\ocr.txt");
+            Assert.Equal(@"C:\cache\hashA\ocr.txt", repo.BuscarCacheDerivado("hashA", "OcrBruto", "dpi=200;ocr=v1"));
+
+            // distinta variante => miss
+            Assert.Null(repo.BuscarCacheDerivado("hashA", "OcrBruto", "dpi=300;ocr=v1"));
+
+            // upsert (misma clave) pisa la ruta
+            repo.GuardarCacheDerivado("hashA", "OcrBruto", "dpi=200;ocr=v1", @"C:\cache\hashA\ocr2.txt");
+            Assert.Equal(@"C:\cache\hashA\ocr2.txt", repo.BuscarCacheDerivado("hashA", "OcrBruto", "dpi=200;ocr=v1"));
+        }
+        finally
+        {
+            Microsoft.Data.Sqlite.SqliteConnection.ClearAllPools();
+            if (File.Exists(tmp)) File.Delete(tmp);
+        }
+    }
+
     public void Dispose()
     {
         Microsoft.Data.Sqlite.SqliteConnection.ClearAllPools();

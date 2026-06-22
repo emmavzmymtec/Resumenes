@@ -338,7 +338,7 @@ CREATE INDEX IF NOT EXISTS ix_respuesta_examen ON RespuestaUsuario(examen_id);
 
 ## Pendientes / backlog (no en esta spec)
 
-- Purga/límite de tamaño de la caché de derivados.
+- Purga/límite de tamaño de la caché de derivados (incluyendo archivos huérfanos: copiados a disco sin registro en SQLite si el proceso muere entre el copy y el insert).
 - Re-detección automática de temas al editar el prompt de detección.
 - Exportar examen/resultado a PDF.
 - Tarifas con distinción cache-hit/cache-miss de Deepseek (hoy se simplifica a input/output).

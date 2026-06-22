@@ -28,6 +28,8 @@ public class ConfirmarTemasVmTests
         public string? ObtenerAjustePrompt(string clave) => null;
         public void GuardarAjustePrompt(string clave, string texto) { }
         public void EliminarAjustePrompt(string clave) { }
+        public string? BuscarCacheDerivado(string hashContenido, string tipo, string claveVariante) => null;
+        public void GuardarCacheDerivado(string hashContenido, string tipo, string claveVariante, string ruta) { }
     }
 
     // ── Fake de ServicioNavegacion que no hace nada ──────────────────────

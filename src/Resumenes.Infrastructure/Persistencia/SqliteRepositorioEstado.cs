@@ -289,4 +289,31 @@ public class SqliteRepositorioEstado(string cadenaConexion) : IRepositorioEstado
         cmd.Parameters.AddWithValue("$c", clave);
         cmd.ExecuteNonQuery();
     }
+
+    public string? BuscarCacheDerivado(string hashContenido, string tipo, string claveVariante)
+    {
+        using var con = Abrir();
+        using var cmd = con.CreateCommand();
+        cmd.CommandText = "SELECT ruta FROM CacheDerivado WHERE hash_contenido=$h AND tipo=$t AND clave_variante=$v;";
+        cmd.Parameters.AddWithValue("$h", hashContenido);
+        cmd.Parameters.AddWithValue("$t", tipo);
+        cmd.Parameters.AddWithValue("$v", claveVariante);
+        var r = cmd.ExecuteScalar();
+        return r is string s ? s : null;
+    }
+
+    public void GuardarCacheDerivado(string hashContenido, string tipo, string claveVariante, string ruta)
+    {
+        using var con = Abrir();
+        using var cmd = con.CreateCommand();
+        cmd.CommandText = @"INSERT INTO CacheDerivado (hash_contenido, tipo, clave_variante, ruta, creado_en)
+                            VALUES ($h,$t,$v,$r,$c)
+                            ON CONFLICT(hash_contenido, tipo, clave_variante) DO UPDATE SET ruta=$r, creado_en=$c;";
+        cmd.Parameters.AddWithValue("$h", hashContenido);
+        cmd.Parameters.AddWithValue("$t", tipo);
+        cmd.Parameters.AddWithValue("$v", claveVariante);
+        cmd.Parameters.AddWithValue("$r", ruta);
+        cmd.Parameters.AddWithValue("$c", DateTime.UtcNow.ToString("o"));
+        cmd.ExecuteNonQuery();
+    }
 }

@@ -49,6 +49,8 @@ Log.Logger = new LoggerConfiguration()
     .CreateLogger();
 
 var appDataDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "ResumenesApp");
+if (string.IsNullOrWhiteSpace(cfg.RutaCache))
+    cfg.RutaCache = Path.Combine(appDataDir, "cache");
 var secretos = new DpapiAlmacenSecretos(Path.Combine(appDataDir, "config", "deepseek.key"));
 
 var idxKey = Array.IndexOf(args, "--set-key");

@@ -29,4 +29,8 @@ public interface IRepositorioEstado
     void GuardarAjustePrompt(string clave, string texto);
     /// <summary>Borra el override (vuelve al default del código).</summary>
     void EliminarAjustePrompt(string clave);
+
+    /// <summary>Ruta del artefacto cacheado para (hash, tipo, variante); null si no hay registro.</summary>
+    string? BuscarCacheDerivado(string hashContenido, string tipo, string claveVariante);
+    void GuardarCacheDerivado(string hashContenido, string tipo, string claveVariante, string ruta);
 }

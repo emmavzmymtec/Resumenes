@@ -87,6 +87,15 @@ public class SqliteRepositorioEstado(string cadenaConexion) : IRepositorioEstado
         // foreign_keys=ON (Abrir) + ON DELETE CASCADE en el esquema ⇒ borrar el padre
         // elimina automáticamente Archivo, Tema, TemaArchivo, Unidad y Ejecucion asociados.
         using var con = Abrir();
+
+        // Limpiar exclusiones huérfanas (ExclusionArchivo no tiene FK a Analisis).
+        using (var delExcl = con.CreateCommand())
+        {
+            delExcl.CommandText = "DELETE FROM ExclusionArchivo WHERE carpeta_origen = (SELECT carpeta_origen FROM Analisis WHERE id=$id);";
+            delExcl.Parameters.AddWithValue("$id", id);
+            delExcl.ExecuteNonQuery();
+        }
+
         using var cmd = con.CreateCommand();
         cmd.CommandText = "DELETE FROM Analisis WHERE id = $id;";
         cmd.Parameters.AddWithValue("$id", id);

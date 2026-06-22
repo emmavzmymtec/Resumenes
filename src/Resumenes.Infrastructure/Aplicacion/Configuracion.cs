@@ -18,4 +18,8 @@ public class Configuracion
     public string RutaRuntime { get; set; } = "";
     /// <summary>Raíz de la caché de derivados (OCR/limpieza). Vacío = App calcula %LOCALAPPDATA%/ResumenesApp/cache.</summary>
     public string RutaCache { get; set; } = "";
+    /// <summary>Tarifa estimada de tokens de entrada (USD por millón). Editable; puede variar.</summary>
+    public decimal PrecioInputPorMillonUsd { get; set; } = 0.27m;
+    /// <summary>Tarifa estimada de tokens de salida (USD por millón). Editable; puede variar.</summary>
+    public decimal PrecioOutputPorMillonUsd { get; set; } = 1.10m;
 }

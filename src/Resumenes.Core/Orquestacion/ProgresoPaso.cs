@@ -23,4 +23,13 @@ public sealed class ContextoPaso(
     public CancellationToken Ct { get; init; }
     public void Reportar(string detalle, int? sub = null, int? subTotal = null) =>
         progreso?.Report(new ProgresoPaso(fase, item, itemIndice, itemTotal, etapa, detalle, sub, subTotal, EstadoEvento.Avance));
+
+    public int TokensEntrada { get; private set; }
+    public int TokensSalida { get; private set; }
+    /// <summary>Acumula los tokens de una llamada a la IA dentro de este paso.</summary>
+    public void AcumularTokens(int entrada, int salida)
+    {
+        TokensEntrada += entrada;
+        TokensSalida += salida;
+    }
 }

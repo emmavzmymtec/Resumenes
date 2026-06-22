@@ -52,6 +52,9 @@ public class PipelineOrquestador(IRepositorioEstado repo, IRelojUtc reloj)
                 unidad.PromptVersion = paso.PromptVersion;
                 unidad.ModeloIa = paso.ModeloIa;
                 unidad.ErrorMsg = null;
+                unidad.TokensEntrada = ctx.TokensEntrada;
+                unidad.TokensSalida = ctx.TokensSalida;
+                unidad.Tokens = ctx.TokensEntrada + ctx.TokensSalida;
                 unidad.ActualizadoEn = reloj.Ahora();
                 repo.GuardarUnidad(unidad);
                 ok++;

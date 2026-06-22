@@ -85,6 +85,7 @@ public class ConstructorPipeline(
                         ctx.Reportar("pensando…");
                         var r = await ia.CompletarAsync(new SolicitudIA(
                             prompts.SystemLimpieza(), bloque, 0.2, 8000, "limpieza-v1", cfg.Modelo), ctx.Ct);
+                        ctx.AcumularTokens(r.TokensPrompt, r.TokensCompletion);
                         sb.Append(r.Texto).Append('\n');
                     }
                     EscrituraAtomica.Escribir(limpio, sb.ToString().Trim());
@@ -139,6 +140,7 @@ public class ConstructorPipeline(
                         var sys = prompts.SystemResumen(tema.Nombre, promptResumen);
                         var r = await ia.CompletarAsync(new SolicitudIA(
                             sys, bloque, 0.5, 8000, "resumen-v1", cfg.Modelo), ctx.Ct);
+                        ctx.AcumularTokens(r.TokensPrompt, r.TokensCompletion);
                         partes.Add(r.Texto);
                     }
                     EscrituraAtomica.Escribir(resumen, UnirResumenes(partes));

@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Resumenes.Licencias.Api.Datos;
+using Resumenes.Licencias.Api.Endpoints;
+using Resumenes.Licencias.Api.Servicios;
 using System.Security.Cryptography;
 
 if (args.Length > 0 && args[0] == "gen-keys")
@@ -24,6 +26,11 @@ builder.Services.AddDbContext<LicenciasDbContext>(opt =>
                       ?? "Data Source=licencias.db");
 });
 
+builder.Services.AddScoped<ServicioActivacion>();
+builder.Services.AddScoped(_ => new FirmadorTokens(
+    Environment.GetEnvironmentVariable("FIRMA_PRIVADA_PEM")
+    ?? throw new InvalidOperationException("Falta FIRMA_PRIVADA_PEM")));
+
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
@@ -33,6 +40,8 @@ using (var scope = app.Services.CreateScope())
 }
 
 app.MapGet("/salud", () => Results.Text("ok"));
+
+EndpointsPublicos.Mapear(app);
 
 app.Run();
 

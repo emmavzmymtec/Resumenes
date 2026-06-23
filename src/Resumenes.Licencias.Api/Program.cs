@@ -40,14 +40,19 @@ builder.Services.AddRateLimiter(opt =>
 {
     opt.RejectionStatusCode = 429;
     opt.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(ctx =>
-        RateLimitPartition.GetFixedWindowLimiter(
+    {
+        if (ctx.Request.Path.StartsWithSegments("/salud"))
+            return RateLimitPartition.GetNoLimiter("salud");
+
+        return RateLimitPartition.GetFixedWindowLimiter(
             ctx.Connection.RemoteIpAddress?.ToString() ?? "global",
             _ => new FixedWindowRateLimiterOptions
             {
                 PermitLimit = 60,
                 Window = TimeSpan.FromMinutes(1),
                 QueueLimit = 0,
-            }));
+            });
+    });
 });
 
 var app = builder.Build();

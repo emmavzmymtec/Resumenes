@@ -35,6 +35,13 @@ public partial class ExamenesVm : VistaModeloBase
         if (_an is not null) _nav.Navegar<VistaCrearExamen>(new ParametroCrearExamen(_an));
     }
 
+    /// <summary>Vuelve a la pantalla de Resultados del análisis.</summary>
+    [RelayCommand]
+    private void Volver()
+    {
+        if (_an is not null) _nav?.Navegar<VistaResultados>(new ParametroResultados(_an));
+    }
+
     [RelayCommand]
     private void Rendir(ExamenItemVm? item)
     {

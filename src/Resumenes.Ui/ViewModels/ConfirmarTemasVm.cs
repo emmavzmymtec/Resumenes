@@ -91,6 +91,10 @@ public partial class ConfirmarTemasVm : VistaModeloBase
         Temas.Remove(tema);
     }
 
+    /// <summary>Vuelve a Inicio descartando el flujo de confirmación de temas.</summary>
+    [RelayCommand]
+    private void Volver() => _nav?.Navegar<VistaInicio>();
+
     /// <summary>
     /// Fusiona los dos temas más recientes que estén seleccionados
     /// (implementación básica: fusiona primero con segundo en la lista).

@@ -22,6 +22,7 @@ public partial class VistaEjecutando : Page
         InitializeComponent();
         DataContext = vm;
         Loaded += OnCargado;
+        Unloaded += OnDescargado;
     }
 
     private void OnCargado(object sender, RoutedEventArgs e)
@@ -29,5 +30,11 @@ public partial class VistaEjecutando : Page
         Loaded -= OnCargado; // una sola vez por instancia
         if (_nav.ConsumirParametro() is ParametroEjecucion param)
             _ = _vm.EjecutarAsync(param.An, param.Prompt);
+    }
+
+    private void OnDescargado(object sender, RoutedEventArgs e)
+    {
+        Unloaded -= OnDescargado;
+        _vm.AlSalir(); // cancela el pipeline si se abandona la pantalla
     }
 }

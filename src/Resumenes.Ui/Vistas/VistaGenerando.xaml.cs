@@ -21,6 +21,7 @@ public partial class VistaGenerando : Page
         InitializeComponent();
         DataContext = vm;
         Loaded += OnCargado;
+        Unloaded += OnDescargado;
     }
 
     private void OnCargado(object sender, RoutedEventArgs e)
@@ -28,5 +29,11 @@ public partial class VistaGenerando : Page
         Loaded -= OnCargado;
         if (_nav.ConsumirParametro() is ParametroTemas param)
             _ = _vm.GenerarAsync(param.An, param.TemasDetectados, param.PromptResumen);
+    }
+
+    private void OnDescargado(object sender, RoutedEventArgs e)
+    {
+        Unloaded -= OnDescargado;
+        _vm.AlSalir(); // cancela la generación si se abandona la pantalla
     }
 }

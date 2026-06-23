@@ -20,7 +20,7 @@
       </ui:TitleBar.Icon>
     </ui:TitleBar>
 
-    <ui:NavigationView x:Name="Nav" Grid.Row="1" PaneDisplayMode="Left">
+    <ui:NavigationView x:Name="Nav" Grid.Row="1" PaneDisplayMode="Left" IsBackButtonVisible="Collapsed">
       <ui:NavigationView.MenuItems>
         <ui:NavigationViewItem Content="Inicio"
             TargetPageType="{x:Type vistas:VistaInicio}">

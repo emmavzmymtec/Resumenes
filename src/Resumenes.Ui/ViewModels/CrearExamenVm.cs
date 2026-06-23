@@ -61,5 +61,12 @@ public partial class CrearExamenVm : VistaModeloBase
         finally { Generando = false; }
     }
 
+    /// <summary>Vuelve al historial de exámenes del análisis sin crear nada.</summary>
+    [RelayCommand]
+    private void Volver()
+    {
+        if (_an is not null) _nav?.Navegar<VistaExamenes>(new ParametroExamenes(_an));
+    }
+
     internal Task CrearParaTestAsync() => Crear();
 }

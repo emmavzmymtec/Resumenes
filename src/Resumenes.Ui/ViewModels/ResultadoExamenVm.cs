@@ -21,6 +21,8 @@ public partial class ResultadoExamenVm : VistaModeloBase
     [ObservableProperty] private string _porcentajeLegible = "";
     [ObservableProperty] private bool _aprobado;
     [ObservableProperty] private string _feedbackGeneral = "";
+    /// <summary>True mientras se genera el examen para reintentar (llamada a la IA).</summary>
+    [ObservableProperty] private bool _reintentando;
     public ObservableCollection<ItemResultadoVm> Detalle { get; } = new();
 
     public ResultadoExamenVm(IRepositorioExamenes repo, IServicioExamenes svc, ServicioNavegacion nav)
@@ -49,7 +51,8 @@ public partial class ResultadoExamenVm : VistaModeloBase
     [RelayCommand]
     private async Task Reintentar()
     {
-        if (_examen is null || _an is null) return;
+        if (_examen is null || _an is null || Reintentando) return;
+        Reintentando = true;
         try
         {
             var cfg = System.Text.Json.JsonSerializer.Deserialize<ConfigExamen>(_examen.ConfigJson);
@@ -58,6 +61,14 @@ public partial class ResultadoExamenVm : VistaModeloBase
             _nav.Navegar<VistaRendirExamen>(new ParametroRendir(nuevo.Id, _an));
         }
         catch { /* si falla, permanecer en el resultado */ }
+        finally { Reintentando = false; }
+    }
+
+    /// <summary>Vuelve al historial de exámenes del análisis.</summary>
+    [RelayCommand]
+    private void Volver()
+    {
+        if (_an is not null) _nav?.Navegar<VistaExamenes>(new ParametroExamenes(_an));
     }
 }
 

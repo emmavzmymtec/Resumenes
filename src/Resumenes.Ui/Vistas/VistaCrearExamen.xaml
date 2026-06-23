@@ -14,6 +14,13 @@
   <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="20">
     <StackPanel MaxWidth="680" Margin="0,8">
 
+      <ui:Button Content="Volver"
+                 Command="{Binding VolverCommand}"
+                 Appearance="Secondary"
+                 Icon="{ui:SymbolIcon Symbol=ArrowLeft24}"
+                 HorizontalAlignment="Left"
+                 Margin="0,0,0,16"/>
+
       <!-- Encabezado -->
       <TextBlock Text="Nuevo examen"
                  FontSize="24" FontWeight="SemiBold"

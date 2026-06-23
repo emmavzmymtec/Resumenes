@@ -188,7 +188,7 @@
                    Margin="0,0,0,4"/>
         <TextBlock FontSize="12" Foreground="{DynamicResource TextFillColorSecondaryBrush}"
                    Margin="0,0,0,16">
-          <Run Text="{Binding Actual.Puntos, StringFormat='{}{0:0.##}'}"/>
+          <Run Text="{Binding Actual.Puntos, Mode=OneWay, StringFormat='{}{0:0.##}'}"/>
           <Run Text=" pts"/>
         </TextBlock>
 

@@ -57,6 +57,10 @@ public partial class ConfigurarVm : VistaModeloBase
         }
     }
 
+    /// <summary>Vuelve a Inicio sin iniciar el análisis.</summary>
+    [RelayCommand]
+    private void Volver() => _nav?.Navegar<VistaInicio>();
+
     /// <summary>
     /// Inicia el análisis: abre/crea el Analisis en el repositorio y navega a VistaEjecutando.
     /// </summary>

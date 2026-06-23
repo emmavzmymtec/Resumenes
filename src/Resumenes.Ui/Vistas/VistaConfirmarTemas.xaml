@@ -8,6 +8,13 @@
   <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="20">
     <StackPanel MaxWidth="860" Margin="0,8">
 
+      <ui:Button Content="Volver"
+                 Command="{Binding VolverCommand}"
+                 Appearance="Secondary"
+                 Icon="{ui:SymbolIcon Symbol=ArrowLeft24}"
+                 HorizontalAlignment="Left"
+                 Margin="0,0,0,16"/>
+
       <!-- Encabezado -->
       <TextBlock Text="Confirmar temas detectados"
                  FontSize="22" FontWeight="SemiBold"

@@ -151,6 +151,11 @@
         </Grid.ColumnDefinitions>
 
         <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+          <ui:Button Content="Volver"
+                     Command="{Binding VolverCommand}"
+                     Appearance="Secondary"
+                     Icon="{ui:SymbolIcon Symbol=ArrowLeft24}"
+                     Margin="0,0,16,0"/>
           <TextBlock FontSize="15" FontWeight="SemiBold"
                      Foreground="{DynamicResource TextFillColorPrimaryBrush}">
             <Run Text="Pregunta "/>

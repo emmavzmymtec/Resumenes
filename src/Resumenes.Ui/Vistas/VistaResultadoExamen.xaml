@@ -7,11 +7,19 @@
 
   <Page.Resources>
     <BooleanToVisibilityConverter x:Key="BoolToVis"/>
+    <vm:InverseBoolToVisibilityConverter x:Key="InvBoolToVis"/>
     <vm:StringToVisibilityConverter x:Key="StringToVis"/>
   </Page.Resources>
 
   <ScrollViewer VerticalScrollBarVisibility="Auto">
     <StackPanel MaxWidth="820" Margin="32,24" HorizontalAlignment="Center">
+
+      <ui:Button Content="Volver"
+                 Command="{Binding VolverCommand}"
+                 Appearance="Secondary"
+                 Icon="{ui:SymbolIcon Symbol=ArrowLeft24}"
+                 HorizontalAlignment="Left"
+                 Margin="0,0,0,16"/>
 
       <!-- Encabezado: título del examen -->
       <TextBlock Text="{Binding Titulo}" FontSize="20" FontWeight="Bold"
@@ -165,7 +173,16 @@
                  Appearance="Primary"
                  HorizontalAlignment="Center"
                  MinWidth="200" Height="44"
-                 Margin="0,24,0,32"/>
+                 Margin="0,24,0,32"
+                 Visibility="{Binding Reintentando, Converter={StaticResource InvBoolToVis}}"/>
+
+      <!-- Indicador de carga mientras la IA genera el examen nuevo -->
+      <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,24,0,32"
+                  Visibility="{Binding Reintentando, Converter={StaticResource BoolToVis}}">
+        <ui:ProgressRing IsIndeterminate="True" Width="28" Height="28" Margin="0,0,10,0"/>
+        <TextBlock Text="Generando un examen nuevo…" VerticalAlignment="Center"
+                   Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
+      </StackPanel>
 
     </StackPanel>
   </ScrollViewer>

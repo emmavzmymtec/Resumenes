@@ -83,7 +83,14 @@ public partial class GenerandoVm : VistaModeloBase
     {
         _cts.Cancel();
         AgregarLog("Cancelado por el usuario.");
+        _nav?.Navegar<VistaInicio>();
     }
+
+    /// <summary>
+    /// Limpieza al abandonar la pantalla: cancela la generación en curso para que una
+    /// generación abandonada no termine navegando sola a Resultados.
+    /// </summary>
+    public void AlSalir() => _cts.Cancel();
 
     // ── Método principal ──────────────────────────────────────────────────
 

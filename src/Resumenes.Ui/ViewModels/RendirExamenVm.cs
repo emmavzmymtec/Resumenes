@@ -135,4 +135,22 @@ public partial class RendirExamenVm : VistaModeloBase
             Entregando = false;
         }
     }
+
+    /// <summary>Vuelve al historial de exámenes, guardando la respuesta actual como borrador.</summary>
+    [RelayCommand]
+    private void Volver()
+    {
+        if (_an is not null)
+            _nav?.Navegar<Resumenes.Ui.Vistas.VistaExamenes>(new ParametroExamenes(_an));
+    }
+
+    /// <summary>
+    /// Limpieza al abandonar la pantalla (navegación o cierre): detiene el cronómetro para que un
+    /// examen abandonado no se autoentregue en segundo plano, y persiste la respuesta en curso.
+    /// </summary>
+    public void AlSalir()
+    {
+        _timer.Stop();
+        GuardarActual();
+    }
 }

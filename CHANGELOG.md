@@ -4,15 +4,22 @@ Todos los cambios notables del proyecto se documentan en este archivo.
 Formato basado en [Keep a Changelog](https://keepachangelog.com/es/1.1.0/);
 versionado [SemVer](https://semver.org/lang/es/).
 
-## [No publicado]
+## [1.1.0] — 2026-06-23
 
 ### Añadido
 
+- **Simulador de exámenes**: genera exámenes con IA a partir del material del análisis. Tipos de pregunta: opción múltiple (una o varias respuestas), verdadero/falso justificado, desarrollo, desarrollo con ítems, completar espacios y emparejar columnas. Incluye **tiempo límite**, **corrección automática con feedback por pregunta y nota**, historial de exámenes por análisis y opción de **reintentar**.
 - **Prompts editables desde Configuración** (corrección de OCR, detección de temas y resumen), con opción de restaurar los valores por defecto. El formato de salida del PDF permanece protegido.
 
 ### Cambiado
 
 - **Los prompts por defecto ahora son neutros y multi-idioma**: la IA detecta el idioma del material y resume en ese idioma (ya no se fuerza español).
+
+### Corregido
+
+- **Navegación coherente**: se reemplazó la flecha "atrás" nativa por un botón **"Volver"** explícito en cada pantalla. Antes, al volver podían aparecer pantallas en blanco, formularios sin contexto o pantallas de progreso ya terminadas.
+- Se evita la **autoentrega en segundo plano** de un examen cronometrado abandonado y la **navegación fantasma** de un análisis/generación dejado a medias (al salir de la pantalla se cancela la tarea o se detiene el cronómetro).
+- **Indicador de carga** al reintentar un examen, mientras la IA genera el examen nuevo.
 
 ### Importante
 
@@ -55,4 +62,5 @@ material de estudio en PDFs de resumen por tema.
   **"Exportar PDFs"** (copia a Documentos/Escritorio) o desactivar el Modo protegido en
   Acrobat. Ver [README → Solución de problemas](README.md).
 
+[1.1.0]: https://github.com/emmavzmymtec/Resumenes/releases/tag/v1.1.0
 [1.0.0]: https://github.com/emmavzmymtec/Resumenes/releases/tag/v1.0.0

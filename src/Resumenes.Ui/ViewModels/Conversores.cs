@@ -5,6 +5,30 @@ using System.Windows.Data;
 namespace Resumenes.Ui.ViewModels;
 
 /// <summary>
+/// Convierte bool? a bool para RadioButton: Convert recibe el valor del VM (Vf),
+/// ConverterParameter es el valor esperado ("True" o "False").
+/// Permite RadioButton bindeados a la misma propiedad nullable.
+/// </summary>
+[ValueConversion(typeof(bool?), typeof(bool))]
+public sealed class NullableBoolToCheckedConverter : IValueConverter
+{
+    public static readonly NullableBoolToCheckedConverter Instancia = new();
+
+    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+    {
+        if (value is bool b && parameter is string s && bool.TryParse(s, out var expected))
+            return b == expected;
+        return false;
+    }
+
+    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+    {
+        if (value is true && parameter is string s && bool.TryParse(s, out var v)) return (bool?)v;
+        return Binding.DoNothing;
+    }
+}
+
+/// <summary>
 /// Convierte bool a Visibility de forma inversa: true → Collapsed, false → Visible.
 /// </summary>
 [ValueConversion(typeof(bool), typeof(Visibility))]

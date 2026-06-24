@@ -161,13 +161,38 @@
                                Foreground="{DynamicResource TextFillColorPrimaryBrush}"/>
                   </StackPanel>
 
-                  <!-- Estado + respuestas -->
-                  <TextBlock Text="{Binding EstadoLegible}" FontWeight="SemiBold" Margin="0,2,0,0"/>
-                  <TextBlock Margin="0,4,0,0" TextWrapping="Wrap"
-                             Text="{Binding RespuestaUsuario, StringFormat='Tu respuesta: {0}'}"/>
-                  <TextBlock Margin="0,2,0,0" TextWrapping="Wrap"
-                             Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                             Text="{Binding RespuestaCorrecta, StringFormat='Respuesta correcta: {0}'}"/>
+                  <!-- Estado (coloreado según resultado) -->
+                  <TextBlock Text="{Binding EstadoLegible}" FontWeight="Bold" FontSize="13" Margin="0,2,0,2">
+                    <TextBlock.Style>
+                      <Style TargetType="TextBlock">
+                        <Setter Property="Foreground" Value="{DynamicResource SystemFillColorCriticalBrush}"/>
+                        <Style.Triggers>
+                          <DataTrigger Binding="{Binding EstadoLegible}" Value="Correcta">
+                            <Setter Property="Foreground" Value="{DynamicResource SystemFillColorSuccessBrush}"/>
+                          </DataTrigger>
+                          <DataTrigger Binding="{Binding EstadoLegible}" Value="Parcial">
+                            <Setter Property="Foreground" Value="{DynamicResource SystemFillColorCautionBrush}"/>
+                          </DataTrigger>
+                        </Style.Triggers>
+                      </Style>
+                    </TextBlock.Style>
+                  </TextBlock>
+
+                  <!-- Tu respuesta: etiqueta tenue + valor con contraste -->
+                  <TextBlock Margin="0,4,0,0" TextWrapping="Wrap" FontSize="13">
+                    <Run Text="Tu respuesta:" FontWeight="SemiBold"
+                         Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
+                    <Run Text="{Binding RespuestaUsuario}" FontWeight="Medium"
+                         Foreground="{DynamicResource TextFillColorPrimaryBrush}"/>
+                  </TextBlock>
+
+                  <!-- Respuesta correcta: valor destacado en verde -->
+                  <TextBlock Margin="0,3,0,0" TextWrapping="Wrap" FontSize="13">
+                    <Run Text="Respuesta correcta:" FontWeight="SemiBold"
+                         Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
+                    <Run Text="{Binding RespuestaCorrecta}" FontWeight="SemiBold"
+                         Foreground="{DynamicResource SystemFillColorSuccessBrush}"/>
+                  </TextBlock>
 
                   <!-- Feedback IA -->
                   <TextBlock Text="{Binding Feedback}" FontSize="12" TextWrapping="Wrap"

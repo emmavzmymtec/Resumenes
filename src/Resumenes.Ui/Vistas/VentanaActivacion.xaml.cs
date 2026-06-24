@@ -1,4 +1,6 @@
+using System.Diagnostics;
 using System.Windows;
+using System.Windows.Navigation;
 using Microsoft.Extensions.DependencyInjection;
 using Resumenes.Ui.ViewModels;
 using Wpf.Ui.Controls;
@@ -19,5 +21,19 @@ public partial class VentanaActivacion : FluentWindow
             main.Show();
             Close();
         };
+    }
+
+    // Abre los enlaces del disclaimer (mailto / wa.me) en la app por defecto del sistema.
+    private void AbrirEnlace(object sender, RequestNavigateEventArgs e)
+    {
+        try
+        {
+            Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri) { UseShellExecute = true });
+        }
+        catch
+        {
+            // Si no hay handler para mailto/https, no rompemos la ventana de activación.
+        }
+        e.Handled = true;
     }
 }

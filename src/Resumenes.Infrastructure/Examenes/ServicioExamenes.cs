@@ -57,14 +57,15 @@ public class ServicioExamenes(
         var (tokIn, tokOut) = await corrector.CorregirAbiertasAsync(abiertas, cfg.Modelo, ct);
 
         var res = corrector.CalcularResultado(pares, cfg.EscalaNotaMaxima, cfg.NotaAprobacion);
+        var (devolucion, dIn, dOut) = await corrector.GenerarDevolucionAsync(pares, res.Porcentaje, cfg.Modelo, ct);
 
         foreach (var (_, r) in pares) repo.GuardarRespuesta(r);
 
         examen.Estado = EstadoExamen.Corregido;
         examen.Nota = res.Nota; examen.Porcentaje = res.Porcentaje; examen.Aprobado = res.Aprobado;
-        examen.FeedbackGeneral = res.FeedbackGeneral;
-        examen.Tokens += tokIn + tokOut;
-        examen.CostoEstimado += Costo(tokIn, tokOut);
+        examen.FeedbackGeneral = devolucion;
+        examen.Tokens += tokIn + tokOut + dIn + dOut;
+        examen.CostoEstimado += Costo(tokIn + dIn, tokOut + dOut);
         examen.FinalizadoEn = reloj.Ahora();
         repo.GuardarExamen(examen);
         return examen;

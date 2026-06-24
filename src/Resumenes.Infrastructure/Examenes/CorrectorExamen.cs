@@ -92,8 +92,9 @@ public class CorrectorExamen(IClienteIA ia) : ICorrectorExamen
             sb.AppendLine($"Respuesta del alumno: {r.RespuestaJson}");
         }
 
-        var sys = "Sos un evaluador de exámenes justo y conciso. Penalizá lo incorrecto y reconocé lo correcto. " +
-                  "Marcá 'ambigua' si la respuesta es interpretable de varias formas.";
+        var sys = "Sos un evaluador de exámenes justo. Asigná puntaje PROPORCIONAL a lo correcto " +
+                  "(no exijas perfección: una respuesta parcialmente buena merece parte de los puntos). " +
+                  "Penalizá solo lo incorrecto y reconocé lo correcto. Marcá 'ambigua' si es interpretable de varias formas.";
         var resp = await ia.CompletarAsync(new SolicitudIA(sys, sb.ToString(), 0.3, 8000, "examen-corr-v1", modelo), ct);
 
         var s = resp.Texto.Trim();
@@ -126,6 +127,37 @@ public class CorrectorExamen(IClienteIA ia) : ICorrectorExamen
         var fb = $"Acertaste {correctas} de {todo.Count} preguntas ({pct}%).";
         return new ResultadoCorreccion(nota, pct, aprobado, fb, 0, 0);
     }
+
+    public async Task<(string texto, int tokIn, int tokOut)> GenerarDevolucionAsync(
+        IReadOnlyList<(PreguntaExamen p, RespuestaUsuario r)> todo, double pct, string modelo, CancellationToken ct)
+    {
+        try
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine($"El alumno hizo un examen y sacó {pct:0}% de acierto. Detalle por pregunta:");
+            foreach (var (p, r) in todo)
+            {
+                var estado = Resumenes.Core.Examenes.EvaluadorRespuesta.Estado(r.PuntosObtenidos, p.Puntos);
+                sb.AppendLine($"- [{estado}] {p.Enunciado}");
+            }
+            sb.AppendLine("Escribí una devolución breve (2-4 frases), en segunda persona, motivadora: " +
+                          "reconocé lo que hizo bien y señalá 1-2 temas o conceptos puntuales a profundizar. " +
+                          "Inferí los temas del contenido de las preguntas. Sin markdown, solo texto.");
+
+            var sys = "Sos un tutor cercano y honesto que da devoluciones útiles y alentadoras.";
+            var resp = await ia.CompletarAsync(new SolicitudIA(sys, sb.ToString(), 0.5, 600, "examen-devol-v1", modelo), ct);
+            var txt = resp.Texto.Trim();
+            return (string.IsNullOrWhiteSpace(txt) ? Respaldo(pct) : txt, resp.TokensPrompt, resp.TokensCompletion);
+        }
+        catch
+        {
+            return (Respaldo(pct), 0, 0);
+        }
+    }
+
+    private static string Respaldo(double pct) =>
+        pct >= 60 ? $"¡Buen trabajo! Sacaste {pct:0}%. Repasá las preguntas que fallaste para afianzar."
+                  : $"Sacaste {pct:0}%. No aflojes: repasá los temas de las preguntas que fallaste y volvé a intentar.";
 
     // ── helpers de parseo de RespuestaJson ──
     private static HashSet<int> ParseIndices(string? resp)

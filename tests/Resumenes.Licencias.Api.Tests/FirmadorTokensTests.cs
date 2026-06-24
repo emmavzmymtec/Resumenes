@@ -60,4 +60,45 @@ public class FirmadorTokensTests
 
         Assert.False(resultado.IsValid);
     }
+
+    [Theory]
+    [InlineData("pem")]            // PEM bien formado (saltos reales)
+    [InlineData("pem-escapado")]   // saltos como \n literales (caso típico de variable de entorno)
+    [InlineData("pem-una-linea")]  // saltos colapsados a espacios
+    [InlineData("base64-der")]     // solo el base64 del DER, sin headers (a prueba de pegado)
+    public async Task Firmar_ToleraDistintosFormatosDeClave(string formato)
+    {
+        using var ec = ECDsa.Create(ECCurve.NamedCurves.nistP256);
+        var pubPem = ec.ExportSubjectPublicKeyInfoPem();
+        var priv = formato switch
+        {
+            "pem" => ec.ExportECPrivateKeyPem(),
+            "pem-escapado" => ec.ExportECPrivateKeyPem().Replace("\n", "\\n"),
+            "pem-una-linea" => ec.ExportECPrivateKeyPem().Replace("\r\n", "\n").Replace("\n", " "),
+            "base64-der" => Convert.ToBase64String(ec.ExportECPrivateKey()),
+            _ => throw new ArgumentOutOfRangeException(nameof(formato)),
+        };
+
+        var token = new FirmadorTokens(priv).Firmar("lic-9", "hw-9", "Ana");
+
+        using var ecPub = ECDsa.Create();
+        ecPub.ImportFromPem(pubPem);
+        var resultado = await new JsonWebTokenHandler().ValidateTokenAsync(token, new TokenValidationParameters
+        {
+            ValidateIssuer = false,
+            ValidateAudience = false,
+            ValidateLifetime = false,
+            IssuerSigningKey = new ECDsaSecurityKey(ecPub),
+            ValidAlgorithms = ["ES256"],
+        });
+
+        Assert.True(resultado.IsValid, $"el formato '{formato}' no validó");
+        Assert.Equal("lic-9", resultado.Claims["lic"]);
+    }
+
+    [Fact]
+    public void Firmar_ClaveVacia_Lanza()
+    {
+        Assert.Throws<ArgumentException>(() => new FirmadorTokens("   ").Firmar("l", "h", "c"));
+    }
 }

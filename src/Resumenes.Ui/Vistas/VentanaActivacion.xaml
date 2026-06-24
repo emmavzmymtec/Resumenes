@@ -4,7 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
     xmlns:vm="clr-namespace:Resumenes.Ui.ViewModels"
-    Title="Resúmenes — Activación" Width="560" Height="540"
+    Title="Resúmenes — Activación" Width="560" Height="680"
     WindowStartupLocation="CenterScreen" ResizeMode="NoResize"
     ExtendsContentIntoTitleBar="True" WindowBackdropType="Mica">
     <ui:FluentWindow.Resources>
@@ -12,42 +12,87 @@
         <vm:InverseBoolToVisibilityConverter x:Key="InvBoolToVis"/>
         <vm:StringToVisibilityConverter x:Key="StrToVis"/>
     </ui:FluentWindow.Resources>
-    <Grid Margin="32">
+    <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <TextBlock Grid.Row="0" Text="Activá tu licencia" FontSize="24" FontWeight="Bold"/>
-        <TextBlock Grid.Row="1" Margin="0,8,0,16" TextWrapping="Wrap"
-                   Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                   Text="Ingresá la clave que recibiste para desbloquear la app en este equipo."/>
+        <!-- Barra de título con botón Cerrar (sin Maximizar: la ventana no es redimensionable). -->
+        <ui:TitleBar Grid.Row="0" Title="Resúmenes — Activación" ShowMaximize="False"/>
 
-        <ui:TextBox Grid.Row="2" PlaceholderText="RESU-XXXXX-XXXXX-XXXXX-XXXXX"
-                    Text="{Binding Clave, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                    FontSize="16" Margin="0,0,0,12"/>
+        <Grid Grid.Row="1" Margin="32,8,32,28">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
 
-        <ui:Button Grid.Row="3" Content="Activar" Appearance="Primary" HorizontalAlignment="Left"
-                   Command="{Binding ActivarCommand}"
-                   Visibility="{Binding Activando, Converter={StaticResource InvBoolToVis}}"
-                   Icon="{ui:SymbolIcon Symbol=Key24}"/>
+            <TextBlock Grid.Row="0" Text="Activá tu licencia" FontSize="24" FontWeight="Bold"/>
+            <TextBlock Grid.Row="1" Margin="0,8,0,16" TextWrapping="Wrap"
+                       Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                       Text="Ingresá la clave que recibiste para desbloquear la app en este equipo."/>
 
-        <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Left"
-                    Visibility="{Binding Activando, Converter={StaticResource BoolToVis}}">
-            <ui:ProgressRing IsIndeterminate="True" Width="22" Height="22"/>
-            <TextBlock Text="Activando…" Margin="8,0,0,0" VerticalAlignment="Center"/>
-        </StackPanel>
+            <ui:TextBox Grid.Row="2" PlaceholderText="RESU-XXXXX-XXXXX-XXXXX-XXXXX"
+                        Text="{Binding Clave, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                        FontSize="16" Margin="0,0,0,12"/>
 
-        <ui:InfoBar Grid.Row="4" Margin="0,12,0,0" Severity="Error" IsOpen="True"
-                    Visibility="{Binding MensajeError, Converter={StaticResource StrToVis}}"
-                    Title="No se pudo activar" Message="{Binding MensajeError}"/>
+            <ui:Button Grid.Row="3" Content="Activar" Appearance="Primary" HorizontalAlignment="Left"
+                       Command="{Binding ActivarCommand}"
+                       Visibility="{Binding Activando, Converter={StaticResource InvBoolToVis}}"
+                       Icon="{ui:SymbolIcon Symbol=Key24}"/>
 
-        <TextBlock Grid.Row="5" VerticalAlignment="Bottom" TextWrapping="Wrap" FontSize="12"
-                   Foreground="{DynamicResource TextFillColorTertiaryBrush}"
-                   Text="{Binding IdEquipo, StringFormat='ID de equipo: {0}'}"/>
+            <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Left"
+                        Visibility="{Binding Activando, Converter={StaticResource BoolToVis}}">
+                <ui:ProgressRing IsIndeterminate="True" Width="22" Height="22"/>
+                <TextBlock Text="Activando…" Margin="8,0,0,0" VerticalAlignment="Center"/>
+            </StackPanel>
+
+            <ui:InfoBar Grid.Row="4" Margin="0,12,0,0" Severity="Error" IsOpen="True"
+                        Visibility="{Binding MensajeError, Converter={StaticResource StrToVis}}"
+                        Title="No se pudo activar" Message="{Binding MensajeError}"/>
+
+            <!-- Disclaimer: cómo conseguir la clave + requisito de Deepseek -->
+            <Border Grid.Row="5" Margin="0,20,0,0" Padding="16" CornerRadius="8"
+                    Background="{DynamicResource ControlFillColorDefaultBrush}"
+                    BorderBrush="{DynamicResource ControlElevationBorderBrush}" BorderThickness="1">
+                <StackPanel>
+                    <TextBlock FontWeight="SemiBold" FontSize="15" Text="¿No tenés una clave?"/>
+                    <TextBlock Margin="0,2,0,8" TextWrapping="Wrap"
+                               Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                               Text="Escribime para conseguirla:"/>
+
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <ui:SymbolIcon Symbol="Mail24" FontSize="18" VerticalAlignment="Center"
+                                       Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
+                        <ui:HyperlinkButton Content="emmavz@live.com" NavigateUri="mailto:emmavz@live.com"
+                                            Margin="4,0,0,0"/>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="0,2,0,0">
+                        <ui:SymbolIcon Symbol="Chat24" FontSize="18" VerticalAlignment="Center"
+                                       Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
+                        <ui:HyperlinkButton Content="WhatsApp: 11 5945-9241" NavigateUri="https://wa.me/5491159459241"
+                                            Margin="4,0,0,0"/>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal" Margin="0,14,0,0">
+                        <ui:SymbolIcon Symbol="Info24" FontSize="16" VerticalAlignment="Top" Margin="0,1,0,0"
+                                       Foreground="{DynamicResource TextFillColorTertiaryBrush}"/>
+                        <TextBlock Margin="8,0,0,0" TextWrapping="Wrap" FontSize="12" MaxWidth="420"
+                                   Foreground="{DynamicResource TextFillColorTertiaryBrush}"
+                                   Text="Además de la clave, la app usa inteligencia artificial (Deepseek) para los resúmenes y los exámenes. Para que funcione necesitás una cuenta de Deepseek con saldo (desde unos US$2), que cargás vos en tu propia cuenta. La app no cobra ese saldo."/>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
+            <TextBlock Grid.Row="6" VerticalAlignment="Bottom" TextWrapping="Wrap" FontSize="12"
+                       Foreground="{DynamicResource TextFillColorTertiaryBrush}"
+                       Text="{Binding IdEquipo, StringFormat='ID de equipo: {0}'}"/>
+        </Grid>
     </Grid>
 </ui:FluentWindow>

@@ -133,9 +133,9 @@ public class SqliteRepositorioExamenes(string cadenaConexion) : IRepositorioExam
     {
         using var con = Abrir();
         using var cmd = con.CreateCommand();
-        cmd.CommandText = @"INSERT INTO RespuestaUsuario (id, examen_id, pregunta_id, respuesta_json, correcta, puntos_obtenidos, feedback_ia, ambigua)
-            VALUES ($id,$ex,$pre,$resp,$corr,$pts,$fb,$amb)
-            ON CONFLICT(id) DO UPDATE SET respuesta_json=$resp, correcta=$corr, puntos_obtenidos=$pts, feedback_ia=$fb, ambigua=$amb;";
+        cmd.CommandText = @"INSERT INTO RespuestaUsuario (id, examen_id, pregunta_id, respuesta_json, correcta, puntos_obtenidos, feedback_ia, ambigua, marcada_revisar)
+            VALUES ($id,$ex,$pre,$resp,$corr,$pts,$fb,$amb,$mr)
+            ON CONFLICT(id) DO UPDATE SET respuesta_json=$resp, correcta=$corr, puntos_obtenidos=$pts, feedback_ia=$fb, ambigua=$amb, marcada_revisar=$mr;";
         cmd.Parameters.AddWithValue("$id", u.Id);
         cmd.Parameters.AddWithValue("$ex", u.ExamenId);
         cmd.Parameters.AddWithValue("$pre", u.PreguntaId);
@@ -144,6 +144,7 @@ public class SqliteRepositorioExamenes(string cadenaConexion) : IRepositorioExam
         cmd.Parameters.AddWithValue("$pts", u.PuntosObtenidos);
         cmd.Parameters.AddWithValue("$fb", (object?)u.FeedbackIa ?? DBNull.Value);
         cmd.Parameters.AddWithValue("$amb", u.Ambigua ? 1 : 0);
+        cmd.Parameters.AddWithValue("$mr", u.MarcadaRevisar ? 1 : 0);
         cmd.ExecuteNonQuery();
     }
 
@@ -151,7 +152,7 @@ public class SqliteRepositorioExamenes(string cadenaConexion) : IRepositorioExam
     {
         using var con = Abrir();
         using var cmd = con.CreateCommand();
-        cmd.CommandText = @"SELECT id, examen_id, pregunta_id, respuesta_json, correcta, puntos_obtenidos, feedback_ia, ambigua
+        cmd.CommandText = @"SELECT id, examen_id, pregunta_id, respuesta_json, correcta, puntos_obtenidos, feedback_ia, ambigua, marcada_revisar
                             FROM RespuestaUsuario WHERE examen_id=$ex;";
         cmd.Parameters.AddWithValue("$ex", examenId);
         using var r = cmd.ExecuteReader();
@@ -163,7 +164,8 @@ public class SqliteRepositorioExamenes(string cadenaConexion) : IRepositorioExam
                 Correcta = r.IsDBNull(4) ? null : r.GetInt32(4) != 0,
                 PuntosObtenidos = r.GetDouble(5),
                 FeedbackIa = r.IsDBNull(6) ? null : r.GetString(6),
-                Ambigua = r.GetInt32(7) != 0 });
+                Ambigua = r.GetInt32(7) != 0,
+                MarcadaRevisar = r.GetInt32(8) != 0 });
         return lista;
     }
 }

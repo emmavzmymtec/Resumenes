@@ -203,6 +203,7 @@ CREATE TABLE IF NOT EXISTS RespuestaUsuario (
     puntos_obtenidos REAL NOT NULL DEFAULT 0,
     feedback_ia      TEXT,
     ambigua          INTEGER NOT NULL DEFAULT 0 CHECK (ambigua IN (0,1)),
+    marcada_revisar  INTEGER NOT NULL DEFAULT 0 CHECK (marcada_revisar IN (0,1)),
     FOREIGN KEY (examen_id)   REFERENCES Examen(id)         ON DELETE CASCADE,
     FOREIGN KEY (pregunta_id) REFERENCES PreguntaExamen(id) ON DELETE CASCADE
 );

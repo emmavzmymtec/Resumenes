@@ -31,6 +31,7 @@ public class SqliteRepositorioEstado(string cadenaConexion) : IRepositorioEstado
         // Migración: agregar columnas nuevas a bases existentes (ALTER TABLE ADD COLUMN con guarda).
         AsegurarColumna(con, "Unidad", "tokens_entrada", "INTEGER");
         AsegurarColumna(con, "Unidad", "tokens_salida", "INTEGER");
+        AsegurarColumna(con, "RespuestaUsuario", "marcada_revisar", "INTEGER NOT NULL DEFAULT 0");
         // Limpiar el pool para que las conexiones futuras no hereden PRAGMAs de sesión
         // (foreign_keys=ON queda configurado por schema.sql en esta conexión; el pool lo reutilizaría).
         SqliteConnection.ClearPool(con);

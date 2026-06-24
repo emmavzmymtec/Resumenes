@@ -44,6 +44,7 @@ public class RespuestaUsuario
     public double PuntosObtenidos { get; set; }
     public string? FeedbackIa { get; set; }
     public bool Ambigua { get; set; }
+    public bool MarcadaRevisar { get; set; }
 }
 
 public record CantidadPorTipo(TipoPregunta Tipo, int Cantidad);

@@ -35,7 +35,11 @@ public sealed partial class FirmadorTokens
                 SigningCredentials = credenciales,
             };
 
-            return new JsonWebTokenHandler().CreateToken(descriptor);
+            // Token perpetuo: SetDefaultTimesOnTokenCreation=false evita que
+            // IdentityModel agregue exp/nbf automáticos (1h por defecto). Solo
+            // queda el iat que seteamos explícitamente arriba.
+            return new JsonWebTokenHandler { SetDefaultTimesOnTokenCreation = false }
+                .CreateToken(descriptor);
         }
         finally
         {

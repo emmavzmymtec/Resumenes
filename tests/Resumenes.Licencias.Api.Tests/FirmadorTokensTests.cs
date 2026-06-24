@@ -38,6 +38,9 @@ public class FirmadorTokensTests
         Assert.Equal("hw-abc", resultado.Claims["hwid"]);
         Assert.Equal("Juan Perez", resultado.Claims["sub"]);
         Assert.True(resultado.Claims.ContainsKey("iat"));
+        // Token perpetuo: NO debe llevar exp ni nbf (IdentityModel los agrega por defecto si no se desactiva).
+        Assert.False(resultado.Claims.ContainsKey("exp"), "el token perpetuo no debe tener exp");
+        Assert.False(resultado.Claims.ContainsKey("nbf"), "el token perpetuo no debe tener nbf");
     }
 
     [Fact]

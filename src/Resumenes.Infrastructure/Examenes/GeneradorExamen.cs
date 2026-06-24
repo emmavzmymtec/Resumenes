@@ -7,13 +7,13 @@ namespace Resumenes.Infrastructure.Examenes;
 
 public class GeneradorExamen(IClienteIA ia) : IGeneradorExamen
 {
-    private const string FormatoJson =
+    public const string FormatoJson =
         "Devolvé SOLO un JSON: {\"preguntas\":[{\"tipo\":\"<Tipo>\",\"enunciado\":\"...\",\"puntos\":<n>,\"datos\":{...}}]}. " +
         "Tipos válidos y su 'datos': " +
         "McUna/McVarias → {\"opciones\":[{\"texto\":\"...\",\"correcta\":true|false}]}; " +
-        "VfJustificado → {\"afirmacion\":\"...\",\"esVerdadero\":true|false}; " +
-        "Desarrollo → {\"criterios\":\"qué debe contener una buena respuesta\"}; " +
-        "DesarrolloItems → {\"items\":[{\"enunciado\":\"...\",\"criterios\":\"...\"}]}; " +
+        "VfJustificado → {\"afirmacion\":\"...\",\"esVerdadero\":true|false,\"justificacion\":\"por qué es verdadero o falso, breve\"}; " +
+        "Desarrollo → {\"criterios\":\"qué debe contener una buena respuesta\",\"respuestaEsperada\":\"respuesta modelo breve (2-4 frases)\"}; " +
+        "DesarrolloItems → {\"items\":[{\"enunciado\":\"...\",\"criterios\":\"...\",\"respuestaEsperada\":\"respuesta breve del ítem\"}]}; " +
         "Completar → {\"texto\":\"frase con ___\",\"respuestas\":[\"...\"]}; " +
         "Emparejar → {\"izquierda\":[\"...\"],\"derecha\":[\"...\"],\"pares\":[[0,1]]}. " +
         "Sin texto fuera del JSON. Respetá el idioma del contenido.";

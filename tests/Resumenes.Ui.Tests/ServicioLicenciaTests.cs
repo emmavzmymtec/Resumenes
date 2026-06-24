@@ -136,4 +136,21 @@ public class ServicioLicenciaTests
         Assert.Equal("limite_alcanzado", r.Error);
         Assert.Null(almacen.Datos);
     }
+
+    [Fact]
+    public async Task Activar_ServidorDevuelveTokenNoValido_DevuelveTokenInvalido_NoGuarda()
+    {
+        // El validador usa 'pub' (de nuestro equipo). El servidor devuelve un token
+        // firmado con OTRA clave y para OTRO hwid -> la validacion cripto falla.
+        var (pub, _) = ParYToken(Hwid);
+        var (_, tokenOtro) = ParYToken("hw-OTRA-maquina");
+        var almacen = new AlmacenMemoria();
+        var cliente = new ClienteFake(act: new ResultadoActivacion(true, tokenOtro, null));
+
+        var r = await Crear(pub, almacen, cliente).ActivarAsync("RESU-AAAAA-BBBBB-CCCCC-DDDDD", "PC", default);
+
+        Assert.False(r.Exitoso);
+        Assert.Equal("token_invalido", r.Error);
+        Assert.Null(almacen.Datos);
+    }
 }

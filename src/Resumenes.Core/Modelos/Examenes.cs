@@ -2,6 +2,7 @@ namespace Resumenes.Core.Modelos;
 
 public enum TipoPregunta { McUna, McVarias, VfJustificado, Desarrollo, DesarrolloItems, Completar, Emparejar }
 public enum EstadoExamen { Borrador, EnCurso, Finalizado, Corregido }
+public enum EstadoRespuesta { Correcta, Parcial, Incorrecta }
 
 public class Examen
 {

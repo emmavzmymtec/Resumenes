@@ -4,6 +4,23 @@ Todos los cambios notables del proyecto se documentan en este archivo.
 Formato basado en [Keep a Changelog](https://keepachangelog.com/es/1.1.0/);
 versionado [SemVer](https://semver.org/lang/es/).
 
+## [1.3.0] — 2026-06-24
+
+### Añadido
+
+- **Resultados de examen más completos**: al terminar, cada pregunta muestra **tu respuesta** y la **respuesta correcta**, con un **estado** (Correcta / Parcial / Incorrecta) resaltado por color. Las preguntas de desarrollo incluyen una **respuesta modelo** generada por IA, y verdadero/falso muestra la **justificación** esperada.
+- **Devolución general por IA**: al pie del resultado, un mensaje breve y motivador que evalúa tu desempeño y señala los temas a profundizar.
+- **"Marcar para revisar" funcional**: el marcado se guarda y se restaura, con un **mini-mapa de preguntas** que resalta la actual, las respondidas, las marcadas y las pendientes, y permite saltar a cualquiera.
+
+### Cambiado
+
+- **Corrección más justa** de las preguntas abiertas: puntaje **proporcional** en tres niveles (Correcta / Parcial / Incorrecta) en vez de "todo o nada".
+- **Pantalla de activación**: suma datos de contacto para conseguir una clave y el aviso de que se necesita una cuenta de Deepseek con saldo; además ahora la ventana se puede cerrar.
+
+### Corregido
+
+- **Emparejar columnas**: ya no se puede elegir la misma opción para dos filas (las usadas quedan deshabilitadas) y se corrigió un error que vaciaba la selección al elegir o al hacer scroll.
+
 ## [1.2.0] — 2026-06-24
 
 ### Añadido
@@ -69,6 +86,7 @@ material de estudio en PDFs de resumen por tema.
   **"Exportar PDFs"** (copia a Documentos/Escritorio) o desactivar el Modo protegido en
   Acrobat. Ver [README → Solución de problemas](README.md).
 
+[1.3.0]: https://github.com/emmavzmymtec/Resumenes/releases/tag/v1.3.0
 [1.2.0]: https://github.com/emmavzmymtec/Resumenes/releases/tag/v1.2.0
 [1.1.0]: https://github.com/emmavzmymtec/Resumenes/releases/tag/v1.1.0
 [1.0.0]: https://github.com/emmavzmymtec/Resumenes/releases/tag/v1.0.0

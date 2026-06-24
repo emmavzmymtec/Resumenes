@@ -1,6 +1,6 @@
 #define MyAppName "Resúmenes de Estudio"
 #define MyAppExe "Resumenes.Ui.exe"
-#define MyAppVersion "1.2.0"
+#define MyAppVersion "1.3.0"
 
 [Setup]
 AppId={{8F3A2C7E-5B1D-4E9A-9C2F-RES0MENES001}}
